@@ -3,7 +3,7 @@ import './Home.css';
 import $ from 'jquery';
 import { db, firebaseApp, storage } from '../firebase';
 import firebase from 'firebase'
-import { Button, CircularProgress, LinearProgress } from '@material-ui/core';
+import { Button, CircularProgress, LinearProgress, Switch } from '@material-ui/core';
 
 export default function Home(props) {
     const [passwordTab, setPasswordTab] = useState(true)
@@ -18,6 +18,7 @@ export default function Home(props) {
     const [file, setFile] = useState("");
     const [url, setUrl] = useState("");
     const [progress, setProgress] = useState(0);
+    const [darkMode, setDarkMode] = useState(false);
 
     
     
@@ -99,6 +100,13 @@ const handleSubmit=()=>{
             
 
 }
+const handleDarkMode=()=>{
+    setDarkMode(!darkMode);
+//    if(true){
+//     var element = document.getElementById("container");
+//     element.classList.remove("container");
+//    }
+}
 
 const handleChangePassword=()=>{
     if(confirmNewPassword==newPassword){
@@ -158,7 +166,7 @@ const handleChangePassword=()=>{
 <div>
 
 {/* <!-- These are the navigation icons for the settings page--> */}
-    <div className="container">
+    <div  id="container" className={darkMode?"darkMode":"container"}>
         <div className="leftbox">
             <nav>
                 <a id="passwordTab" onClick={()=>{
@@ -195,7 +203,7 @@ const handleChangePassword=()=>{
                
             </nav>
         </div>
-        <div className="rightbox">
+        <div className={`rightbox`}>
             {passwordTab && <div className="password tabShow">
                 <h1>Change Password</h1>
                 <h2>Current password</h2>
@@ -229,16 +237,27 @@ const handleChangePassword=()=>{
                contactTab &&  <div className="tech support tabShow">
                <h1>Contact Tech Support</h1>
                <a href="https://outlook.office365.com/mail/inbox" target="_blank">ShawnTheHawkAerie@gmail.com</a>
-               <p>Click the link to email our tech support and we will get back to you as 
+               <p style={{color: darkMode && "#777"}}>Click the link to email our tech support and we will get back to you as 
                   soon as possible.</p>
            </div>
            }
             {
                 settingsTab && <div className="settings tabShow">
                 <h1>Settings</h1>
-                <Button onClick={()=>{ firebaseApp.auth().signOut();}}>
+                <div style={{display:"flex", flexDirection:"column"}}>
+                <Button style={{backgroundColor:"#7ed386"}}  onClick={()=>{ firebaseApp.auth().signOut();}}>
                     Log Out
-                </Button>
+                </Button> <br/>
+               <div style={{width:"100%",display:"flex" , justifyContent:"center", alignItems:"center"}}>
+               Dark Mode
+                <Switch
+                 checked={darkMode}
+                 onChange={handleDarkMode}
+                 name="darkMode"
+                //  inputProps={{ 'aria-label': 'secondary checkbox' }}
+                />
+               </div>
+                </div>
             </div>  
             }     
         </div>    
