@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './Home.css';
 import $ from 'jquery';
+import { db, firebaseApp, storage } from '../firebase';
+import { Button } from '@material-ui/core';
 
-export default function Home() {
+export default function Home(props) {
     const [passwordTab, setPasswordTab] = useState(true)
     const [profileTab, setProfileTab] = useState("")
     const [contactTab, setContactTab] = useState("")
@@ -12,18 +14,17 @@ export default function Home() {
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmNewPassword, setConfirmNewPassword]=useState("");
+    const [file, setFile] = useState("");
+    const [url, setUrl] = useState("");
+    
     
     useEffect(()=>{
-        console.log(passwordTab)
+        console.log(props.user.uid)
     },[])
 
     const handleName = (e)=>{
         setName(e.target.value); 
         console.log(name);
-   }
-   const handleBio = (e)=>{
-    setBio(e.target.value);
-     
    }
    const handleCurrentPassword=(e)=>{
       setCurrentPassword(e.target.value)
@@ -39,9 +40,53 @@ const clearPasswordFields = ()=>{
     setNewPassword("");
     setConfirmNewPassword("");
 }
-   const clearInputs = ()=>{
-    setName('');
-   setBio('');
+const handleBio=(e)=>{
+    setBio(e.target.value)
+}
+const selectFileHandler = (event) => {
+    if (event.target.files[0]) {
+        setFile(event.target.files[0]);
+    }
+
+}
+const uploadFileHandler = () => {
+    if (file) {
+        const uploadTask = storage.ref(`images/${file.name}`).put(file);
+        uploadTask.on(
+            "state_changed",
+            snapshot => {
+                // const progress = Math.round(
+                //     (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                // );
+                // setProgress(progress);
+            },
+            error => {
+                console.log(error);
+            },
+           
+        )
+    }
+}
+   const clearEditProfile = ()=>{
+    setName("");
+    setFile("")
+   setBio("");
+}
+const handleSubmit=()=>{
+    const ref = db.collection('users').doc(props.user.uid);  
+    
+    storage.ref("images").child(file.name).getDownloadURL().then(url => {
+                    setUrl(url);      
+
+                }).then(()=>{
+                    ref.set({
+                        name: name,
+                        imageUrl: url,
+                        bio: bio
+                    })
+                })
+            
+
 }
     const toggle=(tabName)=>{
         // var element = document.getElementById(tabName);
@@ -131,18 +176,18 @@ const clearPasswordFields = ()=>{
            {
                profileTab &&  <div class="profile tabShow">
                <h1>Edit Profile</h1>
-             <form>
+             
              <h2>Name</h2>
                <input type="text" class="input"  value={name}
                         onChange={handleName}/>
                 <h2>Upload Profile Picture</h2>
-               <input type="file" class="input"/> 
-               <button class="btn">Upload</button>
+               <input type="file" class="input"  onChange={selectFileHandler}/> 
+               <button class="btn"  onClick={uploadFileHandler} >Upload</button>
                 <h2>Bio</h2>
-               <input type="text" class="input" value="Tell everyone about yourself"/>
-               <button class="btn">Submit</button>
-               <button class="btn">Cancel</button>
-             </form>
+               <input type="text" class="input"onChange={handleBio} value={bio}/>
+               <button class="btn" onClick={handleSubmit} >Submit</button>
+              
+             <button class="btn" onClick={clearEditProfile}>Cancel</button>
            </div>
            }
            {
@@ -156,6 +201,9 @@ const clearPasswordFields = ()=>{
             {
                 settingsTab && <div class="settings tabShow">
                 <h1>Settings</h1>
+                <Button onClick={()=>{ firebaseApp.auth().signOut();}}>
+                    Log Out
+                </Button>
             </div>  
             }     
         </div>    
