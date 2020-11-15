@@ -101,18 +101,26 @@ const handleSubmit=()=>{
 }
 
 const handleChangePassword=()=>{
+    if(confirmNewPassword==newPassword){
+        const emailCred  = firebase.auth.EmailAuthProvider.credential(
+            firebase.auth().currentUser.email, currentPassword);
+            firebase.auth().currentUser.reauthenticateWithCredential(emailCred)
+            .then(() => {
+              // User successfully reauthenticated.
+              alert("Password successfully updated")
+              return firebase.auth().currentUser.updatePassword(newPassword);
+            }).then(()=>{
+                clearPasswordFields();
+            })
+            .catch(error => {
+             alert(`${error} OR you must have been logged in recently to change password`);
+            });
+    }
+    else{
+        alert("New Password doesn't match Confirm password")
+    }
     
-    const emailCred  = firebase.auth.EmailAuthProvider.credential(
-        firebase.auth().currentUser.email, currentPassword);
-        firebase.auth().currentUser.reauthenticateWithCredential(emailCred)
-        .then(() => {
-          // User successfully reauthenticated.
-          alert("Password successfully updated")
-          return firebase.auth().currentUser.updatePassword(newPassword);
-        })
-        .catch(error => {
-         alert(error)
-        });
+   
 }
     const toggle=(tabName)=>{
         // var element = document.getElementById(tabName);
