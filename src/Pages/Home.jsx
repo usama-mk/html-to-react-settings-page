@@ -32,9 +32,13 @@ export default function Home() {
        setNewPassword(e.target.value);
    }
    const handleConfirmNewPassword= (e)=>{
-
+          setConfirmNewPassword(e.target.value);
    }
-
+const clearPasswordFields = ()=>{
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmNewPassword("");
+}
    const clearInputs = ()=>{
     setName('');
    setBio('');
@@ -121,8 +125,8 @@ export default function Home() {
                 <input type="password" class="input" onChange={handleNewPassword} value={newPassword}/>
                 <h2>Confirm new password</h2>
                 <input type="password" class="input" onChange={handleConfirmNewPassword} value={confirmNewPassword}/>
-                <button class="btn" onClick={()=>{}} >Change Password</button>
-                <button class="btn">Cancel</button>
+                <button class="btn"  >Change Password</button>
+                <button class="btn" onClick={clearPasswordFields}>Cancel</button>
             </div>}
            {
                profileTab &&  <div class="profile tabShow">
@@ -132,7 +136,7 @@ export default function Home() {
                <input type="text" class="input"  value={name}
                         onChange={handleName}/>
                 <h2>Upload Profile Picture</h2>
-               <input type="image" class="input"/> 
+               <input type="file" class="input"/> 
                <button class="btn">Upload</button>
                 <h2>Bio</h2>
                <input type="text" class="input" value="Tell everyone about yourself"/>
