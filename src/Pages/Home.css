@@ -1,0 +1,128 @@
+@import url("https://fonts.google.com/specimen/Nunito?category=Serif,Sans+Serif,Display,Monospace#standard-styles");
+
+
+/* The following controls the background and the main container */
+body {
+   background: linear-gradient(to right, 
+    #1ca053, #180db3); 
+    overflow-x: hidden;;
+} 
+.container {
+    background: #fff;
+    width: 540px;
+    height: 450px;
+    margin: 0 auto;
+    position: relative;
+    margin-top: 10%;
+    box-shadow: 2px 5px 20px
+    rgba(119,119,119,.5);
+} 
+
+
+/* The following controls the left box the contains the navigation icons*/
+.leftbox {
+    float: left;
+    top: -5%;
+    left: 5%;
+    position: absolute;
+    width: 15%;
+    height: 110%;
+    background: #247947;
+    box-shadow: 3px 3px 10px
+    rgba(119,119,119,.5);
+    border: .1em solid #fff;
+} 
+nav a {
+    list-style: none;
+    padding: 35px;
+    color: #fff;
+    font-size: 1.1em;
+    display: block;
+    transition: all .3s ease-in-out;
+}
+nav a:hover {
+    color: #10ac84;
+    cursor: pointer;
+    transform: scale(1.2);
+}
+nav a:first-child {
+    margin-top: 50px; /* originally 7px*/
+}
+nav a.active {
+    color: #10ac84;
+}
+
+
+
+/* The following controls the rightbox the contains the information of the icons*/
+.rightbox {
+    width: 60%;
+    margin-left: 27%; 
+    padding-top: 5px;  
+}
+.tabShow {
+    transition: all .5s ease-in;
+    width: 80%;
+}
+h1 {
+    font-family: "Nunito", sans-serif;
+    color: #7ed386;
+    font-size: 1.5rem; /* originally 1.2rem */
+    margin-top: 40px;
+    margin-bottom: 35px;
+}
+h2 {
+    color: #777;
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    font-size: 10px; /* originally 8px */
+    letter-spacing: 1px;
+    margin-left: 2px;
+    margin-top: 10;
+}
+.input {
+    border: 0;
+    border-bottom: 1px solid #3fb6a8; 
+    width: 80px;
+    font-family: "Nunito", sans-serif;
+    font-size: .7em;  
+    padding: 7px 0;
+    color: #070707;
+    outline: none;
+    display: block;
+}
+p {
+    font-family: "Nunito", sans-serif;
+    font-size: 1em;
+    color: black;
+}
+span {
+    font-size: .7em;
+    color: #777;   
+}
+.btn {
+    font-family: "roboto", sans-serif;
+    text-transform: uppercase;
+    font-size: 15px;
+    border: 0;
+    color: #fff;
+    background: #7ed386;
+    padding: 7px 15px;
+    box-shadow: 0px 2px 4px 0px
+    rgba(0,0,0,.2);
+    cursor: pointer;
+    margin-top: 15px;
+}
+.tabShow {
+    display: block;
+}
+ 
+
+footer {
+    position: fixed;
+    bottom: 0;
+    height: 20px;
+    width: 100%;
+    text-align: center;
+    border: 1px solid black;
+}
