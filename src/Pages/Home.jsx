@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Home.css';
 import $ from 'jquery';
 import { db, firebaseApp, storage } from '../firebase';
+import firebase from 'firebase'
 import { Button, CircularProgress, LinearProgress } from '@material-ui/core';
 
 export default function Home(props) {
@@ -98,6 +99,21 @@ const handleSubmit=()=>{
             
 
 }
+
+const handleChangePassword=()=>{
+    
+    const emailCred  = firebase.auth.EmailAuthProvider.credential(
+        firebase.auth().currentUser.email, currentPassword);
+        firebase.auth().currentUser.reauthenticateWithCredential(emailCred)
+        .then(() => {
+          // User successfully reauthenticated.
+          alert("Password successfully updated")
+          return firebase.auth().currentUser.updatePassword(newPassword);
+        })
+        .catch(error => {
+         alert(error)
+        });
+}
     const toggle=(tabName)=>{
         // var element = document.getElementById(tabName);
         // element.classList.add("active");
@@ -180,7 +196,7 @@ const handleSubmit=()=>{
                 <input type="password" className="input" onChange={handleNewPassword} value={newPassword}/>
                 <h2>Confirm new password</h2>
                 <input type="password" className="input" onChange={handleConfirmNewPassword} value={confirmNewPassword}/>
-                <button className="btn"  >Change Password</button>
+                <button className="btn" onClick={handleChangePassword}  >Change Password</button>
                 <button className="btn" onClick={clearPasswordFields}>Cancel</button>
             </div>}
            {
