@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Home.css';
 import $ from 'jquery';
 import { db, firebaseApp, storage } from '../firebase';
-import { Button } from '@material-ui/core';
+import { Button, CircularProgress, LinearProgress } from '@material-ui/core';
 
 export default function Home(props) {
     const [passwordTab, setPasswordTab] = useState(true)
@@ -16,6 +16,8 @@ export default function Home(props) {
     const [confirmNewPassword, setConfirmNewPassword]=useState("");
     const [file, setFile] = useState("");
     const [url, setUrl] = useState("");
+    const [progress, setProgress] = useState(0);
+
     
     
     useEffect(()=>{
@@ -55,10 +57,11 @@ const uploadFileHandler = () => {
         uploadTask.on(
             "state_changed",
             snapshot => {
-                // const progress = Math.round(
-                //     (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                // );
-                // setProgress(progress);
+                const progress = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                );
+                setProgress(progress);
+                console.log(progress)
             },
             error => {
                 console.log(error);
@@ -69,22 +72,29 @@ const uploadFileHandler = () => {
 }
    const clearEditProfile = ()=>{
     setName("");
-    setFile("")
+    setFile("");
    setBio("");
+   setProgress(0);
 }
 const handleSubmit=()=>{
     const ref = db.collection('users').doc(props.user.uid);  
-    
+    var URL;
     storage.ref("images").child(file.name).getDownloadURL().then(url => {
-                    setUrl(url);      
+                   URL=url;      
 
                 }).then(()=>{
                     ref.set({
                         name: name,
-                        imageUrl: url,
+                        imageUrl: URL,
                         bio: bio
                     })
+                }).then(()=>{
+                    ref.update({
+                        imageUrl: URL
+                    })
+                    clearEditProfile();
                 })
+                
             
 
 }
@@ -119,37 +129,37 @@ const handleSubmit=()=>{
         
     }
     return (
-        <div>
+        <body>
              
-<body>
+<div>
 
 {/* <!-- These are the navigation icons for the settings page--> */}
-    <div class="container">
-        <div class="leftbox">
+    <div className="container">
+        <div className="leftbox">
             <nav>
                 <a id="passwordTab" onClick={()=>{
                     toggle("passwordTab")
                 }}
-                class="tab active">
-                    <i class="fa fa-key "></i>
+                className="tab active">
+                    <i className="fa fa-key "></i>
                 </a>
                 <a id="profileTab" onClick={()=>{
                     toggle("profileTab")
                 }}
-                class="tab  ">
-                    <i class="fa fa-user-circle "></i>
+                className="tab  ">
+                    <i className="fa fa-user-circle "></i>
                 </a>
                 <a onClick={()=>{
                     toggle("contactTab")
                 }}
-                class="tab ">
-                    <i class="fa fa-envelope "></i>
+                className="tab ">
+                    <i className="fa fa-envelope "></i>
                 </a>
                 <a onClick={()=>{
                     toggle("settingsTab")
                 }}
-                class="tab ">
-                    <i class="fa fa-cog"></i>
+                className="tab ">
+                    <i className="fa fa-cog"></i>
                 </a>
                 {/* <!--- **Implement Credit Card payment if time permits** */}
                 {/* <a onClick={()=>{
@@ -161,37 +171,38 @@ const handleSubmit=()=>{
                
             </nav>
         </div>
-        <div class="rightbox">
-            {passwordTab && <div class="password tabShow">
+        <div className="rightbox">
+            {passwordTab && <div className="password tabShow">
                 <h1>Change Password</h1>
                 <h2>Current password</h2>
-                <input type="password" class="input" onChange={handleCurrentPassword} value={currentPassword}/>
+                <input type="password" className="input" onChange={handleCurrentPassword} value={currentPassword}/>
                 <h2>New password</h2>
-                <input type="password" class="input" onChange={handleNewPassword} value={newPassword}/>
+                <input type="password" className="input" onChange={handleNewPassword} value={newPassword}/>
                 <h2>Confirm new password</h2>
-                <input type="password" class="input" onChange={handleConfirmNewPassword} value={confirmNewPassword}/>
-                <button class="btn"  >Change Password</button>
-                <button class="btn" onClick={clearPasswordFields}>Cancel</button>
+                <input type="password" className="input" onChange={handleConfirmNewPassword} value={confirmNewPassword}/>
+                <button className="btn"  >Change Password</button>
+                <button className="btn" onClick={clearPasswordFields}>Cancel</button>
             </div>}
            {
-               profileTab &&  <div class="profile tabShow">
+               profileTab &&  <div className="profile tabShow">
                <h1>Edit Profile</h1>
              
              <h2>Name</h2>
-               <input type="text" class="input"  value={name}
+               <input type="text" className="input"  value={name}
                         onChange={handleName}/>
                 <h2>Upload Profile Picture</h2>
-               <input type="file" class="input"  onChange={selectFileHandler}/> 
-               <button class="btn"  onClick={uploadFileHandler} >Upload</button>
+               <input type="file" className="input"  onChange={selectFileHandler}/> <br/>
+               <LinearProgress variant="determinate" value={progress} />
+               <button className="btn"  onClick={uploadFileHandler} >Upload</button>
                 <h2>Bio</h2>
-               <input type="text" class="input"onChange={handleBio} value={bio}/>
-               <button class="btn" onClick={handleSubmit} >Submit</button>
+               <input type="text" className="input"onChange={handleBio} value={bio}/>
+               <button className="btn" onClick={handleSubmit} >Submit</button>
               
-             <button class="btn" onClick={clearEditProfile}>Cancel</button>
+             <button className="btn" onClick={clearEditProfile}>Cancel</button>
            </div>
            }
            {
-               contactTab &&  <div class="tech support tabShow">
+               contactTab &&  <div className="tech support tabShow">
                <h1>Contact Tech Support</h1>
                <a href="https://outlook.office365.com/mail/inbox" target="_blank">ShawnTheHawkAerie@gmail.com</a>
                <p>Click the link to email our tech support and we will get back to you as 
@@ -199,7 +210,7 @@ const handleSubmit=()=>{
            </div>
            }
             {
-                settingsTab && <div class="settings tabShow">
+                settingsTab && <div className="settings tabShow">
                 <h1>Settings</h1>
                 <Button onClick={()=>{ firebaseApp.auth().signOut();}}>
                     Log Out
@@ -215,7 +226,7 @@ const handleSubmit=()=>{
     
 
 
-</body>
+</div>
 
 <footer>
     <a href="">TOS</a>
@@ -226,6 +237,6 @@ const handleSubmit=()=>{
 
 
 
-        </div>
+        </body>
     )
 }
